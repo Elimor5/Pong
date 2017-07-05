@@ -11,7 +11,7 @@ The fully completed project should include the following features:
 
 - [ ] Start, pause, and reset the game
 - [ ] Move paddles vertically without lag
-- [ ] Compete against an computer AI
+- [ ] Compete against a computer AI
 
 in addition, this project will include:
 
