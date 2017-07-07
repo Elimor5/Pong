@@ -1,7 +1,21 @@
+
+const compScoreboard = document.getElementById("comp-scoreboard");
+const humanScoreboard = document.getElementById("human-scoreboard");
+
 class Vector {
   constructor( x = 0, y = 0 ) {
     this.x = x;
     this.y = y;
+  }
+
+  getLength() {
+    return Math.sqrt(this.x * this.x + this.y * this.y);
+  }
+
+  setLength() {
+    const factor = value / this.getLength;
+    this.x *= factor;
+    this.y *= factor;
   }
 }
 
@@ -38,7 +52,7 @@ class Player extends Rectangle {
 
 class Ball {
   constructor(r, velX, velY) {
-    this.pos = new Vector(400,300);
+    this.pos = new Vector(300,200);
     this.radius = r;
     this.velocity = new Vector(velX, velY);
   }
@@ -63,9 +77,9 @@ class Pong {
     this.computer = new Player(15, this.canvas.height / 2);
     this.human = new Player(this.canvas.width - 35, this.canvas.height / 2);
 
-    this.ball = new Ball(10, 350, 350);
+    this.ball = new Ball(10, 150, 150);
     this.paused = true;
-    this.update(0.01)
+    this.update(0.01);
     let lastTime = 0;
     const callback = (milliseconds) => {
       if (lastTime && !this.paused) {
@@ -82,9 +96,12 @@ class Pong {
   }
 
   reset() {
-    this.ball.pos.x = 400;
-    this.ball.pos.y = 300;
-    this.ball.velocity.x = -150;
+    this.ball.pos.x = this.canvas.width / 2;
+    this.ball.pos.y = this.canvas.height / 2;
+    this.ball.velocity.x = 150 * (Math.random() > .5 ? 1 : -1);
+    this.ball.velocity.y = 150 * (Math.random() - .5 ? 1 : -1);
+    this.update(0.01);
+    this.paused = true;
   }
 
   draw() {
@@ -139,10 +156,12 @@ class Pong {
 
     if ( x < 0 + radius ) {
       this.human.score++;
+      humanScoreboard.innerHTML = this.human.score;
       console.log(this.human.score);
       this.reset();
     } else if ( x > this.canvas.width - radius ) {
       this.computer.score++;
+      compScoreboard.innerHTML = this.computer.score;
       console.log("computer" + this.computer.score);
       this.reset();
     }
@@ -163,8 +182,8 @@ class Pong {
     if (this.collision(this.human) || this.collision(this.computer)) {
 
       this.ball.velocity.x = -this.ball.velocity.x;
-      // this.ball.velocity.x *= 1.05;
-      // this.ball.velocity.y *= 1.05;
+      this.ball.velocity.x *= (1 + (Math.random() * .05));
+      this.ball.velocity.y *= (1 + (Math.random() * .05));
       // console.log(this.ball.velocity.x);
       // console.log(this.ball.velocity.y);
     }
@@ -176,6 +195,7 @@ class Pong {
   const canvas = document.getElementById("pong");
   const pong = new Pong(canvas);
 
+
   canvas.addEventListener(("mousemove"), (e) => {
     pong.human.pos.y = event.offsetY;
   });
@@ -185,10 +205,14 @@ class Pong {
       pong.human.pos.y -= 50;
     } else if (e.keyCode === 40 && pong.human.pos.y < canvas.height -115 ) {
       pong.human.pos.y += 50;
-    } else if (e.keyCode === 80) {
+    } else if (e.keyCode !== 38 || e.keyCode !== 40 ) {
       pong.paused = !pong.paused;
     }
-    console.log(pong.paused);
+
+  });
+
+  document.addEventListener(("click"),(e) => {
+    pong.paused = !pong.paused;
   });
 //key up - 38
 //key down - 40
