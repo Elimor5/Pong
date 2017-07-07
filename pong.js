@@ -63,7 +63,7 @@ class Pong {
     this.computer = new Player(15, this.canvas.height / 2);
     this.human = new Player(this.canvas.width - 35, this.canvas.height / 2);
 
-    this.ball = new Ball(10, 150, 150);
+    this.ball = new Ball(10, 250, 250);
     this.paused = true;
     this.update(0.01)
     let lastTime = 0;
