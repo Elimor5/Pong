@@ -27,14 +27,6 @@ class Rectangle {
     ctx.strokeRect(this.pos.x, this.pos.y, this.width, this.height);
   }
 
-  dimensions() {
-    const leftXCoord = this.pos.x;
-    const rightXCoord = this.pos.x + this.width;
-    const top = this.pos.y;
-    const bottom = this.pos.y + this.height;
-
-  }
-
 }
 
 class Player extends Rectangle {
@@ -46,7 +38,7 @@ class Player extends Rectangle {
 
 class Ball {
   constructor(r, velX, velY) {
-    this.pos = new Vector(0+r, 0+r);
+    this.pos = new Vector(400,300);
     this.radius = r;
     this.velocity = new Vector(velX, velY);
   }
@@ -71,30 +63,37 @@ class Pong {
     this.computer = new Player(15, this.canvas.height / 2);
     this.human = new Player(this.canvas.width - 35, this.canvas.height / 2);
 
-    this.ball = new Ball(10, 300, 300);
-    this.players = [
-      new Player(), new Player()
-    ];
-
-    let lastTime;
+    this.ball = new Ball(10, 150, 150);
+    this.paused = true;
+    this.update(0.01)
+    let lastTime = 0;
     const callback = (milliseconds) => {
-      if (lastTime) {
+      if (lastTime && !this.paused) {
+
         this.update((milliseconds - lastTime) / 1000); //reconvert back to seconds
       }
 
       lastTime = milliseconds;
-      requestAnimationFrame(callback);
+
+        setTimeout(() => requestAnimationFrame(callback), 1000/100);
+
     };
-    callback();
+    callback(1000);
+  }
+
+  reset() {
+    this.ball.pos.x = 400;
+    this.ball.pos.y = 300;
+    this.ball.velocity.x = -150;
   }
 
   draw() {
-    this.ctx.clearRect( 0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.clearRect(0, 0, this.board.width, this.board.height);
     this.board.createBoard(this.ctx);
     this.ball.createBall(this.ctx);
     this.computer.createPaddle(this.ctx);
     this.human.createPaddle(this.ctx);
-    this.human.dimensions();
+
     // this.players.forEach((player) => this.createRectangle(player));
   }
 
@@ -102,12 +101,12 @@ class Pong {
     const {x,y} = this.ball.pos;
     const { radius } = this.ball;
 
-    if ( x < 0 + radius ) {
-      if ( this.ball.velocity.x < 0 ) { this.ball.velocity.x = -this.ball.velocity.x;
-      }
-    } else if ( x > this.canvas.width - radius ) {
-        if (this.ball.velocity.x > 0 ) {this.ball.velocity.x = -this.ball.velocity.x; }
-    }
+    // if ( x < 0 + radius ) {
+    //   if ( this.ball.velocity.x < 0 ) { this.ball.velocity.x = -this.ball.velocity.x;
+    //   }
+    // } else if ( x > this.canvas.width - radius ) {
+    //     if (this.ball.velocity.x > 0 ) {this.ball.velocity.x = -this.ball.velocity.x; }
+    // }
 
     if ( y < 0 + radius ) {
       if ( this.ball.velocity.y < 0 ) { this.ball.velocity.y = -this.ball.velocity.y;
@@ -117,41 +116,57 @@ class Pong {
     }
   }
 
-  collision(player) {
-    const  { x, y } = player.pos;
+  collision(object) {
+    const  { x, y } = object.pos;
 
     const upperBound = y;
-    const lowerBound = y + player.height;
+    const lowerBound = y + object.height;
     const leftBound = x;
-    const rightBound = x + player.width;
+    const rightBound = x + object.width;
     let ballPos;
-    player === this.human ? ballPos = this.ball.pos.x + this.ball.radius : ballPos = this.ball.pos.x -  this.ball.radius
+    object === this.human ? ballPos = this.ball.pos.x + this.ball.radius : ballPos = this.ball.pos.x -  this.ball.radius
 
     if (( leftBound < ballPos &&  ballPos < rightBound) &&
         (upperBound < this.ball.pos.y  && this.ball.pos.y < lowerBound) ) {
       return true;
     }
+
   }
+
+  calculateScore () {
+    const {x,y} = this.ball.pos;
+    const { radius } = this.ball;
+
+    if ( x < 0 + radius ) {
+      this.human.score++;
+      console.log(this.human.score);
+      this.reset();
+    } else if ( x > this.canvas.width - radius ) {
+      this.computer.score++;
+      console.log("computer" + this.computer.score);
+      this.reset();
+    }
+
+
+  }
+
 
   update(deltaTime) {
     //ball movement relative to time difference
     this.ball.pos.x += this.ball.velocity.x * deltaTime;
     this.ball.pos.y += this.ball.velocity.y * deltaTime;
 
-
-
-
     this.draw();
     this.maintainInBounds();
-
-    let collided;
+    this.calculateScore();
 
     if (this.collision(this.human) || this.collision(this.computer)) {
-      console.log("collision");
-      if (!collided) {
-        this.ball.velocity.x = -this.ball.velocity.x;
-      }
-      collided = true;
+
+      this.ball.velocity.x = -this.ball.velocity.x;
+      // this.ball.velocity.x *= 1.05;
+      // this.ball.velocity.y *= 1.05;
+      // console.log(this.ball.velocity.x);
+      // console.log(this.ball.velocity.y);
     }
 
     this.computer.pos.y  = this.ball.pos.y * 0.8;
@@ -170,7 +185,10 @@ class Pong {
       pong.human.pos.y -= 50;
     } else if (e.keyCode === 40 && pong.human.pos.y < canvas.height -115 ) {
       pong.human.pos.y += 50;
+    } else if (e.keyCode === 80) {
+      pong.paused = !pong.paused;
     }
+    console.log(pong.paused);
   });
 //key up - 38
 //key down - 40
