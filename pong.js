@@ -28,13 +28,20 @@ class Rectangle {
   }
 
   createBoard(ctx) {
-    ctx.fillStyle = "gray";
-    ctx.fillRect(0, 0, this.width, this.height);
-    ctx.strokeStyle = "orange";
-    ctx.strokeRect(0,0, this.width, this.height);
+    // // ctx.fillStyle = "gray";
+    // ctx.fillRect(0, 0, this.width, this.height);
+    // ctx.strokeStyle = "orange";
+    // ctx.strokeRect(0,0, this.width, this.height);
+  }
+
+  createBasketballCourt(ctx) {
+    const img = new Image();
+    image.src = "https://thumb7.shutterstock.com/display_pic_with_logo/605593/122234311/stock-photo-basketball-court-parquet-122234311.jpg";
+    ctx.drawImage(image, this.width,this.height);
   }
 
   createPaddle(ctx) {
+
     ctx.fillStyle = "white";
     ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
     ctx.strokeStyle="orange";
@@ -55,6 +62,7 @@ class Ball {
     this.pos = new Vector(300,200);
     this.radius = r;
     this.velocity = new Vector(velX, velY);
+    this.div = document.getElementById("ball");
   }
 
   createBall(ctx) {
@@ -66,8 +74,48 @@ class Ball {
     ctx.fillStyle = "white";
     ctx.fill();
   }
-}
 
+  createball() {
+    this.div.style.top = `${this.pos.y}px`;
+    this.div.style.left = `${this.pos.x}px`;
+  }
+
+  changeBall(i) {
+    const ballTypes = [
+      {
+        background: 'url("img/background/volleyball_court.png")',
+        ballType: 'url("./img/volleyball.gif")',
+        xVel: 430,
+        yVel: 250,
+      },
+      {
+        background: 'url("img/background/basketball_court.png")',
+        ballType: 'url("./img/basketball.gif")',
+        xVel: 450,
+        yVel: 250,
+      },
+      {
+        background: 'url("img/background/soccer_field.png")',
+        ballType: 'url("./img/soccer_ball.gif")',
+        xVel: 420,
+        yVel: 100,
+      },
+      {
+        background: 'url("img/background/football_field.jpg")',
+        ballType: 'url("./img/football.gif")',
+        xVel: 300,
+        yVel: 850,
+      }
+    ];
+
+    return ballTypes[i];
+  }
+
+  // changeBall() {
+  //   const balls = [];
+  //   this.div.style.background-image = "url('./img/basketball.gif')";
+  // }
+}
 
 class Pong {
   constructor(canvas) {
@@ -76,8 +124,8 @@ class Pong {
     this.board = new Rectangle(this.canvas.width, this.canvas.height);
     this.computer = new Player(15, this.canvas.height / 2);
     this.human = new Player(this.canvas.width - 35, this.canvas.height / 2);
-
-    this.ball = new Ball(10, 150, 150);
+    this.ballType = 0;
+    this.ball = new Ball(30, 250, 250);
     this.paused = true;
     this.update(0.01);
     let lastTime = 0;
@@ -89,7 +137,7 @@ class Pong {
 
       lastTime = milliseconds;
 
-        setTimeout(() => requestAnimationFrame(callback), 1000/100);
+        setTimeout(() => requestAnimationFrame(callback), 1000/34);
 
     };
     callback(1000);
@@ -98,8 +146,14 @@ class Pong {
   reset() {
     this.ball.pos.x = this.canvas.width / 2;
     this.ball.pos.y = this.canvas.height / 2;
-    this.ball.velocity.x = 150 * (Math.random() > .5 ? 1 : -1);
-    this.ball.velocity.y = 150 * (Math.random() - .5 ? 1 : -1);
+    debugger
+    this.ball.velocity.x = this.ball.changeBall(this.ballType % 4).xVel * (Math.random() > 0.5 ? 1 : -1);
+    this.ball.velocity.y = this.ball.changeBall(this.ballType % 4).yVel * (Math.random() - 0.5 ? 1 : -1);
+
+    this.canvas.style['background-image'] = this.ball.changeBall(this.ballType % 4).background;
+    this.ball.div.style['background-image'] = this.ball.changeBall(this.ballType % 4).ballType;
+    this.ballType++;
+
     this.update(0.01);
     this.paused = true;
   }
@@ -107,7 +161,8 @@ class Pong {
   draw() {
     this.ctx.clearRect(0, 0, this.board.width, this.board.height);
     this.board.createBoard(this.ctx);
-    this.ball.createBall(this.ctx);
+    this.ball.createball(this.ctx);
+
     this.computer.createPaddle(this.ctx);
     this.human.createPaddle(this.ctx);
 

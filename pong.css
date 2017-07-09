@@ -6,3 +6,37 @@
   background-color: red;
   font-size: 20px;
 }
+
+#pong {
+  background-repeat: no-repeat;
+  background-size: strech;
+  background-image: url("img/background/basketball_court.png");
+  background-image: url("img/background/soccer_field.png");
+  background-image: url("img/background/volleyball_court.png");
+  background-image: url("img/background/football_field.jpg");
+  background-size: contain;
+}
+
+#ball {
+  position: absolute;
+  background-image: url("./img/basketball.gif");
+  height: 30px;
+  width: 30px;
+  background-repeat: round;
+  background-image: url("./img/soccer_ball.gif");
+  background-image: url("./img/volleyball.gif");
+  background-image: url("./img/football.gif");
+  //spin
+  -moz-transform: scaleX(-1);
+        -o-transform: scaleX(-1);
+        -webkit-transform: scaleX(-1);
+        transform: scaleX(-1);
+        filter: FlipH;
+        -ms-filter: "FlipH";
+  //spin
+  /*transition: */
+}
+
+.wrapper {
+  position: relative;
+}
