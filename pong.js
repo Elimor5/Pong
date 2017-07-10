@@ -182,7 +182,7 @@ class Pong {
     object === this.human ? ballPos = this.ball.pos.x + this.ball.radius : ballPos = this.ball.pos.x // -  this.ball.radius
 
     if (( leftBound < ballPos &&  ballPos < rightBound) &&
-        (upperBound < this.ball.pos.y  && this.ball.pos.y < lowerBound) ) {
+        (upperBound - this.ball.radius < this.ball.pos.y  && this.ball.pos.y < lowerBound + this.ball.radius) ) {
       return true;
     }
 
@@ -192,12 +192,16 @@ class Pong {
     const {x,y} = this.ball.pos;
     const { radius } = this.ball;
 
-    if ( x < 0 + radius ) {
+    if ( x < 0  ) {
+      console.log(x);
+      console.log(y);
+      console.log(this.computer.pos.x + this.computer.width);
+      console.log(this.computer.pos.y);
+      console.log(this.computer.pos.y + this.computer.height)
       this.human.score++;
       humanScoreboard.innerHTML = this.human.score;
-      console.log(this.human.score);
       this.reset();
-    } else if ( x > this.canvas.width - radius ) {
+    } else if ( x > this.canvas.width ) {
       this.computer.score++;
       compScoreboard.innerHTML = this.computer.score;
       console.log("computer" + this.computer.score);
@@ -217,16 +221,28 @@ class Pong {
     this.maintainInBounds();
     this.calculateScore();
 
-    if (this.collision(this.human) || this.collision(this.computer)) {
 
-      this.ball.velocity.x = -this.ball.velocity.x;
-      this.ball.velocity.x *= (1 + (Math.random() * 0.05));
-      this.ball.velocity.y *= (1 + (Math.random() * 0.05));
+      if (this.collision(this.human)) {
+        console.log("human collision!")
+        if (this.ball.velocity.x > 0 ) {
+          this.ball.velocity.x = -this.ball.velocity.x;
+        }
+      } else if (this.collision(this.computer)) {
+        console.log("computer collision!")
+        if (this.ball.velocity.x < 0) {
+          this.ball.velocity.x = -this.ball.velocity.x;
+        }
+      }
+
+
+
+      // this.ball.velocity.x *= (1 + (Math.random() * 0.02));
+      // this.ball.velocity.y *= (1 + (Math.random() * 0.02));
       // console.log(this.ball.velocity.x);
       // console.log(this.ball.velocity.y);
-    }
 
-    this.computer.pos.y  = this.ball.pos.y;
+
+    this.computer.pos.y  = this.ball.pos.y *.8;
   }
 }
 
@@ -235,9 +251,8 @@ class Pong {
   const whitespace = document.getElementById("container");
 
   whitespace.addEventListener(("mousemove"), (e) => {
-    console.log(event.offsetY);
-    if (event.offsetY -pong.human.height >= 0) {
-      pong.human.pos.y = event.offsetY - pong.human.height;
+    if (e.offsetY -pong.human.height >= 0) {
+      pong.human.pos.y = e.offsetY - pong.human.height;
     }
   });
 
