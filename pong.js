@@ -27,18 +27,6 @@ class Rectangle {
     this.height = h;
   }
 
-  createBoard(ctx) {
-    // // ctx.fillStyle = "gray";
-    // ctx.fillRect(0, 0, this.width, this.height);
-    // ctx.strokeStyle = "orange";
-    // ctx.strokeRect(0,0, this.width, this.height);
-  }
-
-  createBasketballCourt(ctx) {
-    const img = new Image();
-    image.src = "https://thumb7.shutterstock.com/display_pic_with_logo/605593/122234311/stock-photo-basketball-court-parquet-122234311.jpg";
-    ctx.drawImage(image, this.width,this.height);
-  }
 
   createPaddle(ctx) {
 
@@ -146,7 +134,6 @@ class Pong {
   reset() {
     this.ball.pos.x = this.canvas.width / 2;
     this.ball.pos.y = this.canvas.height / 2;
-    debugger
     this.ball.velocity.x = this.ball.changeBall(this.ballType % 4).xVel * (Math.random() > 0.5 ? 1 : -1);
     this.ball.velocity.y = this.ball.changeBall(this.ballType % 4).yVel * (Math.random() - 0.5 ? 1 : -1);
 
@@ -160,13 +147,9 @@ class Pong {
 
   draw() {
     this.ctx.clearRect(0, 0, this.board.width, this.board.height);
-    this.board.createBoard(this.ctx);
     this.ball.createball(this.ctx);
-
     this.computer.createPaddle(this.ctx);
     this.human.createPaddle(this.ctx);
-
-    // this.players.forEach((player) => this.createRectangle(player));
   }
 
   maintainInBounds() {
@@ -196,7 +179,7 @@ class Pong {
     const leftBound = x;
     const rightBound = x + object.width;
     let ballPos;
-    object === this.human ? ballPos = this.ball.pos.x + this.ball.radius : ballPos = this.ball.pos.x -  this.ball.radius
+    object === this.human ? ballPos = this.ball.pos.x + this.ball.radius : ballPos = this.ball.pos.x // -  this.ball.radius
 
     if (( leftBound < ballPos &&  ballPos < rightBound) &&
         (upperBound < this.ball.pos.y  && this.ball.pos.y < lowerBound) ) {
@@ -237,33 +220,31 @@ class Pong {
     if (this.collision(this.human) || this.collision(this.computer)) {
 
       this.ball.velocity.x = -this.ball.velocity.x;
-      this.ball.velocity.x *= (1 + (Math.random() * .05));
-      this.ball.velocity.y *= (1 + (Math.random() * .05));
+      this.ball.velocity.x *= (1 + (Math.random() * 0.05));
+      this.ball.velocity.y *= (1 + (Math.random() * 0.05));
       // console.log(this.ball.velocity.x);
       // console.log(this.ball.velocity.y);
     }
 
-    this.computer.pos.y  = this.ball.pos.y * 0.8;
+    this.computer.pos.y  = this.ball.pos.y;
   }
 }
 
   const canvas = document.getElementById("pong");
   const pong = new Pong(canvas);
+  const whitespace = document.getElementById("container");
 
-
-  canvas.addEventListener(("mousemove"), (e) => {
-    pong.human.pos.y = event.offsetY;
+  whitespace.addEventListener(("mousemove"), (e) => {
+    console.log(event.offsetY);
+    if (event.offsetY -pong.human.height >= 0) {
+      pong.human.pos.y = event.offsetY - pong.human.height;
+    }
   });
 
   document.addEventListener(("keydown"),(e) => {
-    if (e.keyCode === 38 && pong.human.pos.y > 0 ) {
-      pong.human.pos.y -= 50;
-    } else if (e.keyCode === 40 && pong.human.pos.y < canvas.height -115 ) {
-      pong.human.pos.y += 50;
-    } else if (e.keyCode !== 38 || e.keyCode !== 40 ) {
+   if (e.keyCode !== 38 || e.keyCode !== 40 ) {
       pong.paused = !pong.paused;
     }
-
   });
 
   document.addEventListener(("click"),(e) => {

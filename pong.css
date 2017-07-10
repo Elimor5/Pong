@@ -9,12 +9,11 @@
 
 #pong {
   background-repeat: no-repeat;
+
   background-size: strech;
-  background-image: url("img/background/basketball_court.png");
-  background-image: url("img/background/soccer_field.png");
-  background-image: url("img/background/volleyball_court.png");
   background-image: url("img/background/football_field.jpg");
   background-size: contain;
+  margin: 0px auto;
 }
 
 #ball {
@@ -39,4 +38,10 @@
 
 .wrapper {
   position: relative;
+  margin: 0 auto;
+  width: 900px;
+}
+
+.container {
+  
 }
