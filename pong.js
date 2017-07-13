@@ -155,7 +155,7 @@ class Pong {
   maintainInBounds() {
     const {x,y} = this.ball.pos;
     const { radius } = this.ball;
-
+    const wallBounce = new Audio("sounds/hit_paddle.wav");
     // if ( x < 0 + radius ) {
     //   if ( this.ball.velocity.x < 0 ) { this.ball.velocity.x = -this.ball.velocity.x;
     //   }
@@ -163,17 +163,23 @@ class Pong {
     //     if (this.ball.velocity.x > 0 ) {this.ball.velocity.x = -this.ball.velocity.x; }
     // }
 
-    if ( y < 0 + radius ) {
-      if ( this.ball.velocity.y < 0 ) { this.ball.velocity.y = -this.ball.velocity.y;
+    if ( y < 0 + radius/2 ) {
+      if ( this.ball.velocity.y < 0 ) {
+        this.ball.velocity.y = -this.ball.velocity.y;
+        wallBounce.play();
       }
     } else if ( y > this.canvas.height - radius ) {
-        if (this.ball.velocity.y > 0 ) { this.ball.velocity.y = -this.ball.velocity.y; }
+        if (this.ball.velocity.y > 0 ) {
+          this.ball.velocity.y = -this.ball.velocity.y; }
+          wallBounce.play();
     }
   }
 
+
   collision(object) {
     const  { x, y } = object.pos;
-
+    const hitPaddle = new Audio("sounds/hit_paddle.wav");
+    
     const upperBound = y;
     const lowerBound = y + object.height;
     const leftBound = x;
@@ -184,13 +190,14 @@ class Pong {
     if ((( object === this.computer && rightBound  >= ballPos ) || (object === this.human && leftBound <= ballPos )) &&
         (upperBound - this.ball.radius < this.ball.pos.y  && this.ball.pos.y < lowerBound + this.ball.radius) ) {
           if (object === this.computer) {
-            debugger
           }
           console.log(this.ball.pos.y + "ball pos");
           console.log(object.pos.y + "top of paddle");
           console.log(object.pos.y + object.height + "bottom of paddle");
           console.log(this.ball.velocity.x + "current ball velocity");
       this.collisions++;
+
+      hitPaddle.play();
       return true;
     }
 
@@ -203,8 +210,11 @@ class Pong {
     // } else {
     //   this.computer.pos.y += this.computer.velocity.y * deltaTime * adjustmentFactor;
     // }
-    this.computer.pos.y = this.ball.pos.y * 1;
-    if (this.collisions % 7 === 0) {
+    this.computer.pos.y = this.ball.pos.y;
+
+    if (this.collisions === 0) {
+      this.computer.pos.y = this.ball.pos.y * 1;
+    } else if (this.collisions > 15 && this.collisions % 3 === 0) {
       this.computer.pos.y = this.ball.pos.y * 0.5;
     }
   }
@@ -212,6 +222,7 @@ class Pong {
   calculateScore() {
     const {x,y} = this.ball.pos;
     const { radius } = this.ball;
+    const goal = new Audio("sounds/goal.wav");
 
     if ( x < 0  ) {
       console.log("ball went out at" + this.ball.pos.y);
@@ -224,6 +235,7 @@ class Pong {
       //   }
       // } else {
         this.human.score++;
+        goal.play();
         humanScoreboard.innerHTML = this.human.score;
         this.reset();
       // }
@@ -238,10 +250,12 @@ class Pong {
         //   }
         // } else {
           this.computer.score++;
+          goal.play();
           compScoreboard.innerHTML = this.computer.score;
           this.reset();
         // }
     }
+
   }
 
   modalView() {
