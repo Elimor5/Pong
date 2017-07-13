@@ -18,7 +18,7 @@ in addition, this project will include:
 - [ ] a modal on boot and when the game is paused
 - [ ] a production README
 
-This app will consist of a single screen with game board and nav links to Github, LinkedIn and AngiesList. Above the game, there will be instructions to start a new game, pause a game, or reset a game.
+This app will consist of a single screen with game board and nav links to Github, LinkedIn and AngelList. Above the game, there will be instructions to start a new game, pause a game, or reset a game.
 
 ![wireframes](./pong.png)
 
