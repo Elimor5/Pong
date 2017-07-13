@@ -1,18 +1,39 @@
 #comp-scoreboard {
-  background-color: red;
+  background-color: transparent;;
   font-size: 20px;
+  position: absolute;
+  color: coral;
+  font-size: 50px;
+  top: 70px;
+  left: 300px;
+  width: 40px;
+  length; 30px;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
 }
+
 #human-scoreboard {
-  background-color: red;
+  background-color: transparent;;
   font-size: 20px;
+  position: absolute;
+  color: coral;
+  font-size: 50px;
+  top: 70px;
+  left: 600px;
+  width: 40px;
+  length; 30px;
+  text-align: center;
+  font-family: 'Press Start 2P', cursive;
+}
+
+body {
+background-color: lightgreen;
 }
 
 #pong {
   background-repeat: no-repeat;
-
-  background-size: strech;
+  background-size: 100% 100%;
   background-image: url("img/background/football_field.jpg");
-  background-size: contain;
   margin: 0px auto;
 }
 
@@ -40,8 +61,65 @@
   position: relative;
   margin: 0 auto;
   width: 900px;
+  cursor: none;
 }
 
 .container {
-  
+
+}
+
+.modal-open {
+  position: absolute;
+  height: 377px;
+  width: 548px;
+  top: 128px;
+  left: 180px;
+  z-index: 10;
+  border-radius: 30px;
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+}
+
+.modal-closed {
+  display: none;
+}
+
+.logo {
+  margin: 0 auto;
+  height: 100px;
+  width: 300px;
+}
+
+.pause-menu {
+  margin: 0 auto;
+  color: white;
+  font-size: 20px;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.instructions {
+  text-align: center;
+  line-height: 134%;
+  align-self: center;
+  color: white;
+  font-size: 16px;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.dev-icon {
+  margin-top: 30px;
+  margin-left: 80px;
+  font-size: 60px !important;
+  color: black;
+}
+
+.dev-icon:hover {
+  color: white;
+}
+
+.dev-container {
+  display: flex;
+  justify-content: center;
 }

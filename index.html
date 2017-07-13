@@ -2,20 +2,39 @@
   <head>
     <title>Pong</title>
     <link rel="stylesheet" href="pong.css" media="screen" title="no title">
-
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     </style>
   </head>
 
   <body>
-    <h1 id="comp-scoreboard">Computer: 0</h1>
-    <h1 id="human-scoreboard">Human: 0 </h1>
+
+    </div>
+
     <div id="container">
       <div class="wrapper">
-        <div id="ball">
-
+          <h1 id="comp-scoreboard">0</h1>
+          <h1 id="human-scoreboard">0</h1>
+        <div id="modal" class="modal-open">
+            <img class="logo" src="img/logo.png" alt="" />
+              <h1 class="pause-menu">PAUSED</h1>
+                <p class= "instructions">PRESS ANY KEY OR CLICK TO PLAY</p>
+                <p class="instructions">HOVER THE MOUSE TO THE RIGHT OF GAME TO CONTROL YOUR PADDLE</p>
+                <p class="instructions">FIRST TO 10 WINS!</p>
+                <p class="instructions">SCORE 3 IN A ROW TO UNLOCK THE FIREBALL!!!</p>
         </div>
+          <div id="game-over-modal" class="modal-closed">
+            <p class= "instructions">GAME OVER</p>
+            <p id="game-over-message" class="instructions"></p>
+          </div>
+          <div id="ball"> </div>
         <canvas height="600" width="900" id="pong" />
       </div>
+        <div class="dev-container">
+          <a href="https://github.com/Elimor5"><i class="fa fa-github git-in dev-icon"></i></a>
+          <a href="https://www.linkedin.com/in/eli-mordechai-4781b799"><i class="fa fa-linkedin git-in dev-icon" aria-hidden="true"></i></a>
+          <a href="https://angel.co/eli-mordechai-1"><i class="fa fa-angellist git-in dev-icon" aria-hidden="true"></i></a>
+        </div>
     </div>
     <script type="application/javascript" src="pong.js"></script>
   </body>

@@ -39,9 +39,11 @@ class Rectangle {
 }
 
 class Player extends Rectangle {
-  constructor(x,y) {
+  constructor(x,y,name) {
     super(20,100, x, y);
     this.score = 0;
+    this.velocity = 1;
+    this.name = name;
   }
 }
 
@@ -77,7 +79,7 @@ class Ball {
         yVel: 250,
       },
       {
-        background: 'url("img/background/basketball_court.png")',
+        background: 'url("img/background/basketball_court2.png")',
         ballType: 'url("./img/basketball.gif")',
         xVel: 450,
         yVel: 250,
@@ -110,23 +112,20 @@ class Pong {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d");
     this.board = new Rectangle(this.canvas.width, this.canvas.height);
-    this.computer = new Player(15, this.canvas.height / 2);
-    this.human = new Player(this.canvas.width - 35, this.canvas.height / 2);
+    this.computer = new Player(15, this.canvas.height / 2, "Computer");
+    this.human = new Player(this.canvas.width - 35, this.canvas.height / 2, "Player");
     this.ballType = 0;
     this.ball = new Ball(30, 250, 250);
     this.paused = true;
     this.update(0.01);
+    this.collisions = 0;
     let lastTime = 0;
     const callback = (milliseconds) => {
       if (lastTime && !this.paused) {
-
         this.update((milliseconds - lastTime) / 1000); //reconvert back to seconds
       }
-
       lastTime = milliseconds;
-
-        setTimeout(() => requestAnimationFrame(callback), 1000/34);
-
+      requestAnimationFrame(callback);
     };
     callback(1000);
   }
@@ -143,6 +142,7 @@ class Pong {
 
     this.update(0.01);
     this.paused = true;
+    this.collisions = 0;
   }
 
   draw() {
@@ -181,36 +181,99 @@ class Pong {
     let ballPos;
     object === this.human ? ballPos = this.ball.pos.x + this.ball.radius : ballPos = this.ball.pos.x // -  this.ball.radius
 
-    if (( leftBound < ballPos &&  ballPos < rightBound) &&
+    if ((( object === this.computer && rightBound  >= ballPos ) || (object === this.human && leftBound <= ballPos )) &&
         (upperBound - this.ball.radius < this.ball.pos.y  && this.ball.pos.y < lowerBound + this.ball.radius) ) {
+          if (object === this.computer) {
+            debugger
+          }
+          console.log(this.ball.pos.y + "ball pos");
+          console.log(object.pos.y + "top of paddle");
+          console.log(object.pos.y + object.height + "bottom of paddle");
+          console.log(this.ball.velocity.x + "current ball velocity");
+      this.collisions++;
       return true;
     }
 
   }
 
-  calculateScore () {
+  compAI(deltaTime) {
+    // const adjustmentFactor = this.collisions % 3 === 0 ? 0.7 : 1;
+    // if ( this.computer.pos.y > this.ball.pos.y ) {
+    //   this.computer.pos.y -= this.computer.velocity.y * deltaTime * adjustmentFactor;
+    // } else {
+    //   this.computer.pos.y += this.computer.velocity.y * deltaTime * adjustmentFactor;
+    // }
+    this.computer.pos.y = this.ball.pos.y * 1;
+    if (this.collisions % 7 === 0) {
+      this.computer.pos.y = this.ball.pos.y * 0.5;
+    }
+  }
+
+  calculateScore() {
     const {x,y} = this.ball.pos;
     const { radius } = this.ball;
 
     if ( x < 0  ) {
-      console.log(x);
-      console.log(y);
-      console.log(this.computer.pos.x + this.computer.width);
-      console.log(this.computer.pos.y);
-      console.log(this.computer.pos.y + this.computer.height)
-      this.human.score++;
-      humanScoreboard.innerHTML = this.human.score;
-      this.reset();
+      console.log("ball went out at" + this.ball.pos.y);
+      console.log(this.computer.pos.y + "top paddle computer");
+      console.log(this.ball.velocity.x + "ending speed")
+      //in case ball goes through paddle
+      // if ((this.computer.pos.y - this.ball.radius < this.ball.pos.y) && (this.computer.pos.y + this.computer.height + this.ball.radius > this.ball.pos.y)) {
+      //   if (this.ball.velocity.x < 0) {
+      //     this.ball.velocity.x = -this.ball.velocity.x;
+      //   }
+      // } else {
+        this.human.score++;
+        humanScoreboard.innerHTML = this.human.score;
+        this.reset();
+      // }
     } else if ( x > this.canvas.width ) {
-      this.computer.score++;
-      compScoreboard.innerHTML = this.computer.score;
-      console.log("computer" + this.computer.score);
-      this.reset();
+        console.log(this.human.pos.y + "top paddle human");
+        console.log("ball went out at" + this.ball.pos.y);
+        console.log(this.ball.velocity.x + "ending speed")
+        //in case ball goes through paddle
+        // if ((this.human.pos.y < this.ball.pos.y) && (this.human.pos.y + this.human.height > this.ball.pos.y)) {
+        //   if (this.ball.velocity.x > 0) {
+        //     this.ball.velocity.x = -this.ball.velocity.x;
+        //   }
+        // } else {
+          this.computer.score++;
+          compScoreboard.innerHTML = this.computer.score;
+          this.reset();
+        // }
     }
-
-
   }
 
+  modalView() {
+    const modal = document.getElementById("modal");
+
+    if (this.paused) {
+      modal.classList.add("modal-open");
+      modal.classList.remove("modal-closed");
+    } else {
+      modal.classList.remove("modal-open");
+      modal.classList.add("modal-closed");
+    }
+  }
+
+  gameOver() {
+    if (this.computer.score === 10 || this.human.score === 10) {
+        const winner = this.computer.score === 10 ? this.computer : this.human;
+      const gameOverModal = document.getElementById("game-over-modal");
+        gameOverModal.classList.remove("modal-closed");
+        gameOverModal.classList.add("modal-open");
+        document.getElementById("game-over-message").innerHTML = `${winner.name} wins!`;
+        setTimeout(() =>{
+          gameOverModal.classList.remove("modal-open");
+          gameOverModal.classList.add("modal-closed");
+        }, 3000);
+        this.human.score = 0;
+        humanScoreboard.innerhtml = this.human.score;
+        this.computer.score = 0;
+        compScoreboard.innerHTML = this.computer.score;
+
+    }
+  }
 
   update(deltaTime) {
     //ball movement relative to time difference
@@ -220,29 +283,32 @@ class Pong {
     this.draw();
     this.maintainInBounds();
     this.calculateScore();
+    this.modalView();
 
 
       if (this.collision(this.human)) {
-        console.log("human collision!")
-        if (this.ball.velocity.x > 0 ) {
-          this.ball.velocity.x = -this.ball.velocity.x;
+        console.log("human collision!");
+        if (this.ball.velocity.x > 0) {
+          this.ball.velocity.x = -this.ball.velocity.x * 1.1;
+          this.ball.velocity.y = -this.ball.velocity.y * 1.1 * (Math.random() > 0.5 ? 1 : -1);
+          this.computer.velocity *= 1;
+
+          console.log("text");
         }
       } else if (this.collision(this.computer)) {
-        console.log("computer collision!")
+        console.log("computer collision!");
+        console.log("computer vel" + this.computer.velocity);
+        console.log("collisions" + this.collisions);
         if (this.ball.velocity.x < 0) {
-          this.ball.velocity.x = -this.ball.velocity.x;
+          this.ball.velocity.x = -this.ball.velocity.x * 1.02;
+          this.ball.velocity.y = -this.ball.velocity.y * 1.05 * (Math.random() > 0.5 ? 1 : -1);
+          this.computer.velocity *= 1;
+
+            console.log("text");
         }
       }
-
-
-
-      // this.ball.velocity.x *= (1 + (Math.random() * 0.02));
-      // this.ball.velocity.y *= (1 + (Math.random() * 0.02));
-      // console.log(this.ball.velocity.x);
-      // console.log(this.ball.velocity.y);
-
-
-    this.computer.pos.y  = this.ball.pos.y *.8;
+      this.compAI(deltaTime);
+      this.gameOver();
   }
 }
 
@@ -256,14 +322,13 @@ class Pong {
     }
   });
 
+
   document.addEventListener(("keydown"),(e) => {
-   if (e.keyCode !== 38 || e.keyCode !== 40 ) {
       pong.paused = !pong.paused;
-    }
+      pong.modalView();
   });
 
   document.addEventListener(("click"),(e) => {
     pong.paused = !pong.paused;
+    pong.modalView();
   });
-//key up - 38
-//key down - 40
