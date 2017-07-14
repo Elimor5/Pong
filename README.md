@@ -1,60 +1,18 @@
-## JS Project Proposal: Pong
+## SPORT PONG
 
-### Background
+### Background:
 
-The rules of the game are simple. Protect your zone. 2 paddles, one ball. If it goes "out of bounds", the other team scores a point.
+Inspired by the classic ATARI game, Sports pong uses HTML5 Canvas, CSS and Vanilla JavaScript to create a sports themed interactive pong game.
 
-### Functionality & MVP  
+### Technical Implementation
 
-The fully completed project should include the following features:
-
-
-- [ ] Start, pause, and reset the game
-- [ ] Move paddles vertically without lag
-- [ ] Compete against a computer AI
-
-in addition, this project will include:
-
-- [ ] a modal on boot and when the game is paused
-- [ ] a production README
-
-This app will consist of a single screen with game board and nav links to Github, LinkedIn and AngelList. Above the game, there will be instructions to start a new game, pause a game, or reset a game.
-
-![wireframes](./pong.png)
-
-### Architecture and Technologies
-
-- JavaScript for game logic,
-- jQuery for rendering the game instructions and modal
-- Canvas for rendering the board and animations
-
-**Day 1**:
-  Setup all necessary Node modules, including getting webpack up and running and canvas installed. Write a basic entry file and the bare bones of all 3 scripts outlined above. Become comfortable with canvas.  Goals for the day:
-
-  - build out the complete board, with ball, boards and paddles
-
-**Day 2**
-  Dedicate the day to becoming comfortable with canvas.
-  Goals for the day:
-
-  - Write out the logic for the ball's path trajectory and velocity.
-  - Add logic to keep track of score and end the game when a player reaches 10.
-
-**Day 3**
-  Create basic computer AI logic.
-  Goals for the day:
-  - Ensure that computer AI's movements are bug-free and smooth.
+I used HTML5, CSS, Canvas and JavaScript. The ball and the board are HTML elements, while the paddles are canvas elements. Using CSS, I styled the HTML elements and paddles to change their background images after each subsequent point. I used vector math to keep track of all of the objects, maintaining the ball and paddles in bounds and track collisions between the paddles and the ball. Vector math was also used to animate objects. The computer AI was designed to make the computer more vulnerable as the amount of collisions with the paddles went up and the velocity of the ball increases.
 
 
-**Day 4**
-  Install controls so that a user can interact with the game.
+## Future Plans
 
-  Goals for the Day:
-  - Ensure that the game runs smoothly and that all logic is sound
-  - Style the board, paddles, ball, instructions, modal, and links.
-  - Add sound integration to game  
-
-
-  ### Bonus features
-  - [ ] Add an option to toggle Difficulty, including board size, paddle size, ball speed, AI intelligence, etc.
-  - [ ] Add multiplayer functionality.
+A few features I plan to add:
+- An "on fire" mode after one player scores 3 points in a row
+- Adding multiple balls to make the game more difficult
+- Adding goals/baskets/uprights to give the user more points if they get the ball to land in the specified zone
+- Turrets to fire bullets, rendering the opponent paddle frozen for a second or two if they are hit.
