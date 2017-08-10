@@ -1,5 +1,7 @@
 ## SPORT PONG
 
+[live-link](https://elimor5.github.io/Sports-Pong/)
+
 ### Background:
 
 Inspired by the classic ATARI game, Sports pong uses HTML5 Canvas, CSS and Vanilla JavaScript to create a sports themed interactive pong game.
