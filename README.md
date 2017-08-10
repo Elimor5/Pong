@@ -1,6 +1,6 @@
 ## SPORT PONG
 
-[live-link](https://elimor5.github.io/Sports-Pong/)
+[Live Link](https://elimor5.github.io/Sports-Pong/)
 
 ### Background:
 
