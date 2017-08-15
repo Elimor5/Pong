@@ -33,7 +33,7 @@ background-color: lightgreen;
 #pong {
   background-repeat: no-repeat;
   background-size: 100% 100%;
-  background-image: url("img/background/football_field.jpg");
+  background-image: url("img/background/football_field.png");
   margin: 0px auto;
 }
 
